@@ -17,7 +17,7 @@ import java.util.Scanner;
 import static org.eu.miraikan.aiyou.constant.Models.TTS_1;
 import static org.eu.miraikan.aiyou.constant.Voices.ALLOY;
 
-
+//create directory before running
 public class TextToSpeechExample {
     public static void main(String[] args) throws Exception {
 

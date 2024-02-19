@@ -7,6 +7,7 @@ import org.eu.miraikan.aiyou.model.GenerativeModel;
 import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionRequest;
 import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionResponse;
 
+import java.io.InputStream;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Iterator;
@@ -38,9 +39,9 @@ public class ChatCompletion implements GenerativeModel {
     public Iterator<CompletionResponse> generateStreamContent(CompletionRequest completionRequest) throws Exception {
         HttpRequest httpRequest = adapter.createHttpRequest(completionRequest);
 
-        HttpResponse<Stream<String>> httpResponse =client.generateStreamContent(httpRequest);
+        HttpResponse<InputStream> httpResponse =client.generateStreamContent(httpRequest);
 
-        StreamIterator<CompletionResponse> streamIterator = new StreamIterator(httpResponse.body().iterator(),adapter);
+        StreamIterator<CompletionResponse> streamIterator = new StreamIterator<>(httpResponse.body(),adapter);
 
         return streamIterator;
 

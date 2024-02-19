@@ -7,13 +7,14 @@ import java.util.Iterator;
 
 //only for text stream, including base64
 public class StreamIterator<T>  implements Iterator<T> {
-    Iterator<String> stringIterator;
+    InputStream is;
     ModelAdapter<T> modelAdapter;
     T cache;
 
-    public StreamIterator(Iterator<String> stringIterator, ModelAdapter<T> modelAdapter) {
-        this.stringIterator = stringIterator;
+    public StreamIterator(InputStream is, ModelAdapter<T> modelAdapter) {
+
         this.modelAdapter = modelAdapter;
+        this.is = is;
     }
 
 
@@ -21,7 +22,7 @@ public class StreamIterator<T>  implements Iterator<T> {
     @Override
     public boolean hasNext() {
 
-        T t =  modelAdapter.handleStream(stringIterator);
+        T t =  modelAdapter.handleStream(is);
         if(t!=null){
             this.cache=t;
             return true;
@@ -32,7 +33,7 @@ public class StreamIterator<T>  implements Iterator<T> {
     @Override
     public T next() {
         if(cache==null){
-            return  modelAdapter.handleStream(stringIterator);
+            return  modelAdapter.handleStream(is);
         }
         return cache;
     }

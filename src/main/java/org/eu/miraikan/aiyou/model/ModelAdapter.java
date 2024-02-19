@@ -7,29 +7,15 @@ import java.util.Iterator;
 //mainly for json formation. use object mapper mixin or manually mapping.maybe serializer?
 public interface ModelAdapter<T> {
 
-    //optional
-//    default HttpRequest createHttpRequest(Map<String,String> config, GenerativeRequest generativeRequest) throws Exception {
-//        throw new UnsupportedOperationException("createHttpRequest");
-  //      return null;
-//    }
 
-//    default HttpRequest createStreamRequest(Map<String,String> config, GenerativeRequest generativeRequest) throws Exception {
-//        throw new UnsupportedOperationException("createStreamRequest");
-//    }
 
-// even default method can cause erasure and override problem
-
-//    default GenerativeResponse handleHttpResponse(HttpResponse httpResponse) throws Exception{
-//        throw new UnsupportedOperationException("handleHttpResponse");
-//    }
-
-    default T handleStream(Iterator<String> iterator){
+    default T handleStream(InputStream is){
         throw new UnsupportedOperationException("handleStream");
     }
 
 
     //must catch IOException
-    default byte[] handleStream(InputStream is)  {
+    default byte[] handleBinaryStream(InputStream is)  {
         throw new UnsupportedOperationException("handleStream");
     }
 

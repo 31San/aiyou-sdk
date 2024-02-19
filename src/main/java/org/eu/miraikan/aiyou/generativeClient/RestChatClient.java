@@ -58,13 +58,6 @@ public class RestChatClient extends GenerativeClient {
     }
 
 
-    public HttpResponse<InputStream> generateBinaryStreamContent(HttpRequest httpRequest) throws Exception{
-
-
-
-        return client.send(httpRequest, HttpResponse.BodyHandlers.ofInputStream());
-
-    }
 
 
 }

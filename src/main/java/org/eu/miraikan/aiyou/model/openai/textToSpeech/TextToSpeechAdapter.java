@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TextToSpeechAdapter extends OpenAIAdapter {
+public class TextToSpeechAdapter extends OpenAIAdapter<byte[]> {
     ObjectMapper objectMapper;
     //default value
     int chunkSize=100*1024;

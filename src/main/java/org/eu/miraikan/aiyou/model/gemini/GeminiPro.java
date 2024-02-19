@@ -19,12 +19,18 @@ public class GeminiPro implements GenerativeModel {
     public static final String MODEL_NAME = "gemini-pro";
     RestChatClient client;
     GeminiAdapter modelAdapter;
+
+    //use default model
     public GeminiPro(RestChatClient client) {
         this.client=client;
         modelAdapter = new GeminiAdapter(client.getClientConfig(),MODEL_NAME);
     }
 
-
+    //switch to gemini pro 1.5
+    public GeminiPro(RestChatClient client,String MODEL_NAME) {
+        this.client=client;
+        modelAdapter = new GeminiAdapter(client.getClientConfig(),MODEL_NAME);
+    }
 
     public GeminiResponse generateContent(GeminiRequest generativeRequest) throws Exception {
 

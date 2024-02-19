@@ -6,7 +6,7 @@
 
     <groupId>org.eu.miraikan</groupId>
     <artifactId>aiyou-sdk</artifactId>
-    <version>0.11</version>
+    <version>0.12</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

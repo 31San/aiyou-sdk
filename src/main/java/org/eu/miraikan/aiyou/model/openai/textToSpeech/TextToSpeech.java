@@ -1,11 +1,11 @@
 package org.eu.miraikan.aiyou.model.openai.textToSpeech;
 
+import org.eu.miraikan.aiyou.generativeClient.stream.StreamIterator;
 import org.eu.miraikan.aiyou.model.openai.textToSpeech.template.TextToSpeechRequest;
 import org.eu.miraikan.aiyou.types.Blob;
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
-import org.eu.miraikan.aiyou.generativeClient.stream.BinaryStreamIterator;
 import org.eu.miraikan.aiyou.model.GenerativeModel;
-import org.eu.miraikan.aiyou.types.Text;
+
 
 import java.io.InputStream;
 import java.net.http.HttpRequest;
@@ -38,9 +38,9 @@ public class TextToSpeech implements GenerativeModel {
 
         HttpRequest httpRequest = modelAdapter.createHttpRequest(textToSpeechRequest);
 
-        HttpResponse<InputStream> httpResponse = client.generateBinaryStreamContent(httpRequest);
+        HttpResponse<InputStream> httpResponse = client.generateStreamContent(httpRequest);
 
-        return  new BinaryStreamIterator(modelAdapter,httpResponse.body());
+        return  new StreamIterator(httpResponse.body(),modelAdapter);
 
 
     };

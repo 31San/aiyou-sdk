@@ -6,6 +6,7 @@ import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 import org.eu.miraikan.aiyou.generativeClient.stream.StreamIterator;
 import org.eu.miraikan.aiyou.model.GenerativeModel;
 
+import java.io.InputStream;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Iterator;
@@ -28,16 +29,7 @@ public class GeminiPro implements GenerativeModel {
 
     public GeminiResponse generateContent(GeminiRequest generativeRequest) throws Exception {
 
-        //txt to part
-        //part to content
-        //content to generativeRequest;
-        //adapter convert content to request
-        //client send request
 
-//        Part part=new Text(txt);
-//        Content content=new Content(Content.RoleUser, new Part[]{part});
-//        GenerativeRequest generativeRequest = new GenerativeRequest();
-//        generativeRequest.setContents(new Content[] {content});
 
 
         HttpRequest httpRequest = modelAdapter.createHttpRequest(generativeRequest);
@@ -47,26 +39,20 @@ public class GeminiPro implements GenerativeModel {
         System.out.println(httpResponse.body());
 
         return modelAdapter.handleHttpResponse(httpResponse);
-        //response to content, to output
-        //use adapter to convert response to Generative response
 
-  //      return null;
     };
 
 
     //gemini not follow web-sent-event
-    public Iterator<String> generateStreamContent(GeminiRequest generativeRequest) throws Exception {
+    public Iterator<GeminiResponse> generateStreamContent(GeminiRequest generativeRequest) throws Exception {
 
-//        Part part=new Text(txt);
-//        Content content=new Content(Content.RoleUser, new Part[]{part});
-//        GenerativeRequest generativeRequest = new GenerativeRequest();
-//        generativeRequest.setContents(new Content[] {content});
+
 
         HttpRequest httpRequest = modelAdapter.createStreamRequest(generativeRequest);
 
-        HttpResponse<Stream<String>> httpResponse =client.generateStreamContent(httpRequest);
+        HttpResponse<InputStream> httpResponse =client.generateStreamContent(httpRequest);
 
-        return new StreamIterator(httpResponse.body().iterator(),modelAdapter);
+        return new StreamIterator<>(httpResponse.body(),modelAdapter);
 
     }
 }

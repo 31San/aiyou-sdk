@@ -2,12 +2,17 @@ package org.eu.miraikan.aiyou.model.gemini;
 
 
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiResponse;
 
 import org.eu.miraikan.aiyou.model.ModelAdapter;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -17,17 +22,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class GeminiAdapter implements ModelAdapter<String> {
+public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
     String API_KEY;
 
     String BASE_URL ="https://generativelanguage.googleapis.com";
 
     String MODEL_NAME;
 
+    ObjectMapper objectMapper;
+
     public GeminiAdapter(Map<String, String> config,String modelName) {
         API_KEY = config.get("API_KEY");
         BASE_URL = config.get("BASE_URL")==null?BASE_URL:config.get("BASE_URL");
         MODEL_NAME=modelName;
+        objectMapper = new ObjectMapper();
     }
 
 
@@ -36,7 +44,7 @@ public class GeminiAdapter implements ModelAdapter<String> {
 
 
 
-        ObjectMapper objectMapper = new ObjectMapper();
+
 
 
 
@@ -66,7 +74,6 @@ public class GeminiAdapter implements ModelAdapter<String> {
 
 
 
-        ObjectMapper objectMapper = new ObjectMapper();
 
         String json = objectMapper.writeValueAsString(generativeRequest);
 
@@ -87,20 +94,49 @@ public class GeminiAdapter implements ModelAdapter<String> {
 
     //roughly implementation, return generated text directly. Maybe Use Json Stream instead.
     @Override
-    public  String handleStream(Iterator<String> iterator){
+    public  GeminiResponse handleStream(InputStream is){
 
-        Pattern pattern = Pattern.compile("\"text\":\\s*\"(.*)\"");
 
-        while (iterator.hasNext()){
-            String line = iterator.next();
-       //    System.out.println(line);
-            Matcher matcher = pattern.matcher(line);
-            if(matcher.find()){
-                return matcher.group(1);
+
+        JsonFactory jsonFactory = new JsonFactory();
+        try {
+
+
+
+
+            JsonParser parser = jsonFactory.createParser(is);
+
+            JsonToken token = parser.nextToken();
+
+            if (token == JsonToken.START_ARRAY) {
+                token = parser.nextToken();
             }
+
+            if(token == JsonToken.START_OBJECT){
+                GeminiResponse geminiResponse = objectMapper.readValue(parser, GeminiResponse.class);
+
+                int c;
+                while ((c=is.read())!=-1){
+                    if(c==','){
+                        break;
+                    }
+                }
+
+                return geminiResponse;
+            }else {
+                return null;
+            }
+
+
+        } catch (IOException e) {
+           e.printStackTrace();
         }
 
         return null;
+
+      //  Pattern pattern = Pattern.compile("\"text\":\\s*\"(.*)\"");
+
+
     }
 
     public GeminiResponse handleHttpResponse(HttpResponse httpResponse) throws Exception{

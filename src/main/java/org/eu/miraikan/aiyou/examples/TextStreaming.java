@@ -1,9 +1,10 @@
 package org.eu.miraikan.aiyou.examples;
 
-import org.eu.miraikan.aiyou.constant.Roles;
+
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 import org.eu.miraikan.aiyou.model.gemini.GeminiPro;
+import org.eu.miraikan.aiyou.model.gemini.template.GeminiResponse;
 import org.eu.miraikan.aiyou.model.openai.completions.ChatCompletion;
 import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionRequest;
 import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionResponse;
@@ -25,7 +26,7 @@ public class TextStreaming {
         TextStreaming textStreaming = new TextStreaming();
         textStreaming.openAIGenerateStreamContent();
 
-        textStreaming.geminiGenerateStreamContent();
+    //    textStreaming.geminiGenerateStreamContent();
 
     }
 
@@ -45,11 +46,13 @@ public class TextStreaming {
 
 
 
-        Iterator<String> iterator = model.generateStreamContent(generativeRequest);
+        Iterator<GeminiResponse> iterator = model.generateStreamContent(generativeRequest);
 
 
         while (iterator.hasNext()){
-            System.out.print(iterator.next());
+            Text text1 = (Text) iterator.next().getCandidates().get(0).getContent().getParts().get(0);
+
+            System.out.print(text1.getData());
 
         }
     }
@@ -66,19 +69,24 @@ public class TextStreaming {
         CompletionRequest completionRequest = new CompletionRequest();
         completionRequest.setModel(GPT_3_5_TURBO);
         completionRequest.setStream(true);
-        TextMessage textMessage = new TextMessage(ROLE_USER,"hello");
+        TextMessage textMessage = new TextMessage(ROLE_USER,"Write a short story about a magic backpack");
         completionRequest.setMessages(List.of(textMessage));
 
         Iterator<CompletionResponse> iterator = chatCompletion.generateStreamContent(completionRequest);
+
+
         while (iterator.hasNext()){
             CompletionResponse next = iterator.next();
             String str = next.getChoices().get(0).getMessage().getContent();
             //final one finish reason is stop and content will be null
             if(str!=null){
                 System.out.print(str);
+
             }
 
         }
+
+
     }
 
 }

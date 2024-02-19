@@ -49,10 +49,10 @@ public class RestChatClient extends GenerativeClient {
     }
 
 
-    public HttpResponse<Stream<String>> generateStreamContent(HttpRequest httpRequest) throws Exception{
+    public HttpResponse<InputStream> generateStreamContent(HttpRequest httpRequest) throws Exception{
 
 
-        return client.send(httpRequest, HttpResponse.BodyHandlers.ofLines());
+        return client.send(httpRequest,  HttpResponse.BodyHandlers.ofInputStream());
 
 
     }

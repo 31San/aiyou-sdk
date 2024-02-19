@@ -20,7 +20,7 @@ public class BinaryStreamIterator implements Iterator<byte[]> {
 
     @Override
     public boolean hasNext() {
-        byte[] bytes = modelAdapter.handleStream(is);
+        byte[] bytes = modelAdapter.handleBinaryStream(is);
         if(bytes==null){
             return false;
         }
@@ -31,7 +31,7 @@ public class BinaryStreamIterator implements Iterator<byte[]> {
     @Override
     public byte[] next()  {
        if(cache==null){
-           return modelAdapter.handleStream(is);
+           return modelAdapter.handleBinaryStream(is);
        }
         return this.cache;
     }

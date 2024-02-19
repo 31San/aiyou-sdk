@@ -11,11 +11,16 @@ import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionRequest
 import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionResponse;
 import org.eu.miraikan.aiyou.model.openai.completions.template.TextMessage;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Scanner;
 
 public class CompletionAdapter extends OpenAIAdapter<CompletionResponse> {
 
@@ -58,31 +63,56 @@ public class CompletionAdapter extends OpenAIAdapter<CompletionResponse> {
     }
 
     @Override
-    public CompletionResponse handleStream(Iterator<String> iterator){
+    public CompletionResponse handleStream(InputStream is){
+
+        Scanner scanner = new Scanner(is);
+        scanner.useDelimiter("\n\n|\r\n\r\n");
+
+
+
 
 
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.addMixIn(Choice.class,ChoiceMixin.class);
-        String line = iterator.next();
-
-        if(line.length()>5){
-            line = line.substring(5);
-        }
-        if(line.trim().equals("[DONE]")){
-            return null;
-        }
-
-        //skip empty line
-        if (iterator.hasNext()){
-            iterator.next();
-        }
 
         try {
-           return objectMapper.readValue(line,CompletionResponse.class);
-        } catch (JsonProcessingException e) {
+
+            String line = null;
+            if(scanner.hasNextLine()){
+                line = scanner.nextLine();
+
+
+            }else {
+                is.close();
+                return null;
+            }
+
+
+
+
+            if(line.length()>5){
+                line = line.substring(5);
+            }
+
+            if(line.trim().equals("[DONE]")){
+                is.close();
+                return null;
+            }
+
+            //skip empty line
+            if(scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
+
+            return objectMapper.readValue(line,CompletionResponse.class);
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+
        return null;
     }
 

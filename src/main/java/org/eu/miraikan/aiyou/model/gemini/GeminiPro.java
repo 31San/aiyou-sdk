@@ -36,7 +36,7 @@ public class GeminiPro implements GenerativeModel {
 
         HttpResponse<String> httpResponse =client.generateContent(httpRequest);
 
-        System.out.println(httpResponse.body());
+
 
         return modelAdapter.handleHttpResponse(httpResponse);
 

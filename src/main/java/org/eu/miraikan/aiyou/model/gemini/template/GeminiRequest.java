@@ -10,7 +10,7 @@ import java.util.Map;
 public class GeminiRequest {
 
     List<Content> contents;
-    Map<String,String> generationConfig;
+   GenerationConfig generationConfig;
 
 
 
@@ -19,13 +19,11 @@ public class GeminiRequest {
     }
 
 
-
-
-    public Map<String,String> getGenerationConfig() {
+    public GenerationConfig getGenerationConfig() {
         return generationConfig;
     }
 
-    public void setGenerationConfig(Map<String,String> generationConfig) {
+    public void setGenerationConfig(GenerationConfig generationConfig) {
         this.generationConfig = generationConfig;
     }
 

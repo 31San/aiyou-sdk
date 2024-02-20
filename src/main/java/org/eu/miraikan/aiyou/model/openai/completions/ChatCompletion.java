@@ -27,7 +27,6 @@ public class ChatCompletion implements GenerativeModel {
 
         HttpResponse<String> httpResponse =client.generateContent(httpRequest);
 
-        System.out.println(httpResponse.body());
 
         return adapter.handleHttpResponse(httpResponse);
 

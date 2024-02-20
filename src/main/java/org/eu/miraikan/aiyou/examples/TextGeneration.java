@@ -1,5 +1,6 @@
 package org.eu.miraikan.aiyou.examples;
 
+import org.eu.miraikan.aiyou.constant.Models;
 import org.eu.miraikan.aiyou.constant.Roles;
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 
@@ -37,7 +38,7 @@ public class TextGeneration {
     public String geminiGenerateContent(String input) throws Exception {
         RestChatClient client = new RestChatClient();
         client.setClientConfig(ClientConfigurationHelper.createGeminiClientConfig());
-        GeminiPro model = new GeminiPro(client);
+        GeminiPro model = new GeminiPro(client, Models.GEMINI_1_0_PRO_LATEST);
 
         GeminiRequest generativeRequest = new GeminiRequest();
         Text text = new Text(input);

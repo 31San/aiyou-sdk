@@ -50,8 +50,7 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
 
         String json = objectMapper.writeValueAsString(generativeRequest);
 
-        //test only
-        System.out.println(json);
+
 
 
         //create request

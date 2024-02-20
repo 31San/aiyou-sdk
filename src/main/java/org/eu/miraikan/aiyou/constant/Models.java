@@ -31,4 +31,7 @@ public class Models {
 
     public static final String GEMINI_PRO_1_5 = "gemini-1.5-pro";
 
+    //embedding
+    public static final String EMBEDDING_001 = "models/embedding-001";
+
 }

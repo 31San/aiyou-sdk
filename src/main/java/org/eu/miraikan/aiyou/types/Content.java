@@ -1,8 +1,10 @@
 package org.eu.miraikan.aiyou.types;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Content {
 
     String role;

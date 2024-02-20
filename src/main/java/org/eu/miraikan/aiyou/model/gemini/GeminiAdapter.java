@@ -4,10 +4,10 @@ package org.eu.miraikan.aiyou.model.gemini;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
-import org.eu.miraikan.aiyou.model.gemini.template.GeminiResponse;
+import org.eu.miraikan.aiyou.model.gemini.template.*;
 
 import org.eu.miraikan.aiyou.model.ModelAdapter;
 
@@ -43,14 +43,7 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
    public HttpRequest createHttpRequest(GeminiRequest generativeRequest) throws Exception {
 
 
-
-
-
-
-
         String json = objectMapper.writeValueAsString(generativeRequest);
-
-
 
 
         //create request
@@ -72,11 +65,7 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
         //deal with generativeRequest to json
 
 
-
-
         String json = objectMapper.writeValueAsString(generativeRequest);
-
-
 
 
 
@@ -148,7 +137,43 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
 
     }
 
-    //for json view
-    //may need to add json view and method in model class
-  //  public interface Gemini{}
+
+    public HttpRequest createEmbedContentRequest(EmbeddingRequest embeddingRequest) throws JsonProcessingException {
+        String json = objectMapper.writeValueAsString(embeddingRequest);
+
+
+        HttpRequest request = HttpRequest.newBuilder ()
+                .uri(URI.create(BASE_URL+"/v1beta/models/"+MODEL_NAME+":embedContent?key="+API_KEY))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+
+
+        return request;
+    }
+
+    public EmbeddingResponse handleEmbedContent(HttpResponse<String> httpResponse) throws JsonProcessingException {
+        return objectMapper.readValue(httpResponse.body(), EmbeddingResponse.class);
+    }
+
+
+    public HttpRequest createBatchEmbedContentsRequest(BatchEmbeddingRequest batchEmbeddingRequest) throws JsonProcessingException {
+        String json = objectMapper.writeValueAsString(batchEmbeddingRequest);
+
+
+        HttpRequest request = HttpRequest.newBuilder ()
+                .uri(URI.create(BASE_URL+"/v1beta/models/"+MODEL_NAME+":batchEmbedContents?key="+API_KEY))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+
+
+        return request;
+    }
+
+    public BatchEmbeddingResponse handleEmbedContents(HttpResponse<String> httpResponse) throws JsonProcessingException {
+        return objectMapper.readValue(httpResponse.body(), BatchEmbeddingResponse.class);
+    }
 }

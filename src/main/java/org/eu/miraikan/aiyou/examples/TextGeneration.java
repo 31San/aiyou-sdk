@@ -30,8 +30,8 @@ public class TextGeneration {
         TextGeneration textGeneration = new TextGeneration();
 
        textGeneration.geminiGenerateContent("hello");
-      textGeneration.openAIChatCompletion();
-        textGeneration.multiTurnChat();
+ //     textGeneration.openAIChatCompletion();
+  //      textGeneration.multiTurnChat();
     }
 
 

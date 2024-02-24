@@ -1,5 +1,5 @@
 package org.eu.miraikan.aiyou.support.annotation;
 
 public @interface FunctionCalling {
-    String value();
+    String value() default "";
 }

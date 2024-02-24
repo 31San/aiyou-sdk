@@ -1,9 +1,16 @@
 package org.eu.miraikan.aiyou.types.functionCalling;
 
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.eu.miraikan.aiyou.types.serialize.FunctionParametersSerializer;
+
+
 public class FunctionDeclaration {
     String name;
     String description;
-    Parameters parameters;
+
+    @JsonSerialize(using = FunctionParametersSerializer.class)
+    Class<?> parameters;
 
     public String getName() {
         return name;
@@ -21,11 +28,11 @@ public class FunctionDeclaration {
         this.description = description;
     }
 
-    public Parameters getParameters() {
+    public Class<?> getParameters() {
         return parameters;
     }
 
-    public void setParameters(Parameters parameters) {
+    public void setParameters(Class<?> parameters) {
         this.parameters = parameters;
     }
 }

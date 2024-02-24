@@ -1,16 +1,20 @@
 package org.eu.miraikan.aiyou;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
 import org.eu.miraikan.aiyou.model.openai.completions.template.*;
+import org.eu.miraikan.aiyou.support.annotation.Description;
+import org.eu.miraikan.aiyou.support.annotation.FunctionCalling;
+import org.eu.miraikan.aiyou.support.annotation.Required;
 import org.eu.miraikan.aiyou.types.Blob;
 import org.eu.miraikan.aiyou.types.Content;
 import org.eu.miraikan.aiyou.types.Part;
 import org.eu.miraikan.aiyou.types.Text;
 import org.eu.miraikan.aiyou.types.functionCalling.FunctionDeclaration;
-import org.eu.miraikan.aiyou.types.functionCalling.Parameters;
-import org.eu.miraikan.aiyou.types.functionCalling.Property;
+import org.eu.miraikan.aiyou.types.functionCalling.Parameter;
 import org.eu.miraikan.aiyou.types.functionCalling.Tool;
 import org.junit.Test;
 
@@ -115,14 +119,19 @@ public class JsonTest {
         FunctionDeclaration functionDeclaration = new FunctionDeclaration();
 
         functionDeclaration.setName("test");
-        functionDeclaration.setDescription("description");
-        Parameters parameters = new Parameters();
-        parameters.setType("Object");
-        Property name = new Property();
+        functionDeclaration.setDescription("test function");
+
+
+        Parameter parameter = new Parameter();
+        parameter.setType("Object");
+        Parameter name = new Parameter();
         name.setType("String");
         name.setDescription("name description");
-        parameters.setProperties(Map.of("name",name));
-        functionDeclaration.setParameters(parameters);
+        parameter.setProperties(Map.of("name",name));
+
+
+
+        functionDeclaration.setParameters(MovieAndTheater.class);
 
         functionDeclarations.add(functionDeclaration);
         tool.setFunctionDeclarations(functionDeclarations);
@@ -136,5 +145,19 @@ public class JsonTest {
         System.out.println(json);
 
 
+    }
+
+
+    public static  class MovieAndTheater{
+        @JsonPropertyDescription("Any movie title")
+        public String movie;
+        @JsonPropertyDescription("The city and state, e.g. San Francisco, CA or a zip code e.g. 95616")
+        @JsonProperty(required = true)
+        public String location;
+    }
+
+    //should contain only method and object type arg
+    public interface FindTheaters{
+        void find_theaters( MovieAndTheater movieAndTheater);
     }
 }

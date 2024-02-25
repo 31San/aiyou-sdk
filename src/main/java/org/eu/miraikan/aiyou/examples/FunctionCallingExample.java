@@ -2,9 +2,9 @@ package org.eu.miraikan.aiyou.examples;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eu.miraikan.aiyou.constant.Models;
+
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 import org.eu.miraikan.aiyou.model.gemini.GeminiPro;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
@@ -17,19 +17,18 @@ import org.eu.miraikan.aiyou.types.Part;
 import org.eu.miraikan.aiyou.types.Text;
 import org.eu.miraikan.aiyou.types.functionCalling.*;
 
-import java.lang.reflect.InvocationTargetException;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-
-import static org.eu.miraikan.aiyou.constant.Roles.ROLE_MODEL;
-import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
+import static org.eu.miraikan.aiyou.constant.Roles.*;
 
 public class FunctionCallingExample {
     public static void main(String[] args) throws Exception {
         FunctionCallingExample functionCallingExample = new FunctionCallingExample();
     //    functionCallingExample.geminiSingleTurn();
-    //    functionCallingExample.geminiWithFunctionCallHelper();
+
         functionCallingExample.geminiMultiTurn();
     }
 
@@ -78,48 +77,7 @@ public class FunctionCallingExample {
 
     }
 
-//    public void geminiWithFunctionCallHelper() throws Exception {
-//       FunctionCallingHelper functionCallingHelper = new FunctionCallingHelper();
-//       functionCallingHelper.addMethodDefinition(FindTheaters.class);
-//
-//        List<FunctionDeclaration> functionDeclarations = functionCallingHelper.getFunctionDeclarations();
-//
-//
-//        //build request
-//
-//        RestChatClient client = new RestChatClient();
-//        client.setClientConfig(ClientConfigurationHelper.createGeminiClientConfig());
-//        GeminiPro model = new GeminiPro(client);
-//
-//
-//        GeminiRequest geminiRequest = new GeminiRequest();
-//        geminiRequest.setContents(List.of(new Content(ROLE_USER,List.of(new Text("Which theaters in Mountain View show Barbie movie?")))));
-//        Tool tool = new Tool();
-//        tool.setFunctionDeclarations(functionDeclarations);
-//        geminiRequest.setTools(List.of(tool));
-//
-//        GeminiResponse geminiResponse = model.generateContent(geminiRequest);
-//
-//
-//        Part part =  geminiResponse.getCandidates().get(0)
-//                .getContent().getParts().get(0);
-//
-//        FunctionCall functionCall = part instanceof FunctionCall ? ((FunctionCall) part) : null;
-//
-//        if(functionCall!=null){
-//            String name = functionCall.getName();
-//            String args = functionCall.getArgs();
-//
-//            //deserialize
-//            Object functionParameter = functionCallingHelper.getInstance(name,args);
-//
-//            //safe, cause here we have only one parameter type
-//            System.out.println(((MovieAndTheater)functionParameter).movie);
-//            System.out.println(((MovieAndTheater)functionParameter).location);
-//        }
-//
-//
-//    }
+
 
     public void geminiMultiTurn() throws Exception {
 
@@ -179,6 +137,7 @@ public class FunctionCallingExample {
             return;
         }
 
+        //synchronized functionCalling
         Object message = functionCallingHelper.callFunction(functionCall.getName(), functionCall.getArgs());
         ObjectMapper objectMapper = new ObjectMapper();
         String json1 = objectMapper.writeValueAsString(functionCall);
@@ -198,9 +157,15 @@ public class FunctionCallingExample {
 
         System.out.println(text.getData());
 
-
+        //async
+        CompletableFuture<Object> message1 = functionCallingHelper.executeAsync(functionCall.getName(), functionCall.getArgs());
+        message1.thenAccept(
+                System.out::println
+        );
 
     }
+
+
 
     //json model with annotation
     public static  class MovieAndTheater{
@@ -210,13 +175,6 @@ public class FunctionCallingExample {
         @JsonProperty(required = true)
         public String location;
     }
-
-    //should contain only method and object type arg
-//    @FunctionalInterface
-//    public interface FindTheaters{
-//        @JsonPropertyDescription("find movie titles currently playing in theaters based on any description, genre, title words, etc.")
-//        void find_theaters( MovieAndTheater movieAndTheater);
-//    }
 
 
 }

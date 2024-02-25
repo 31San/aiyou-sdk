@@ -16,16 +16,19 @@ public class FunctionDeclaration {
         return name;
     }
 
-    public void setName(String name) {
+    public FunctionDeclaration setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public FunctionDeclaration setDescription(String description) {
+
         this.description = description;
+        return this;
     }
 
     public Class<?> getParameters() {

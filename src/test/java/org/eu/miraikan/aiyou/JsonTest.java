@@ -6,26 +6,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
 import org.eu.miraikan.aiyou.model.openai.completions.template.*;
-import org.eu.miraikan.aiyou.support.annotation.Description;
-import org.eu.miraikan.aiyou.support.annotation.FunctionCalling;
-import org.eu.miraikan.aiyou.support.annotation.Required;
 import org.eu.miraikan.aiyou.types.Blob;
 import org.eu.miraikan.aiyou.types.Content;
 import org.eu.miraikan.aiyou.types.Part;
 import org.eu.miraikan.aiyou.types.Text;
 import org.eu.miraikan.aiyou.types.functionCalling.FunctionDeclaration;
-import org.eu.miraikan.aiyou.types.functionCalling.Parameter;
+;
 import org.eu.miraikan.aiyou.types.functionCalling.Tool;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 import static org.eu.miraikan.aiyou.constant.Models.GPT_3_5_TURBO;
 
 import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
-import static org.junit.Assert.assertEquals;
 
 
 //useful test for json formation
@@ -122,12 +118,6 @@ public class JsonTest {
         functionDeclaration.setDescription("test function");
 
 
-        Parameter parameter = new Parameter();
-        parameter.setType("Object");
-        Parameter name = new Parameter();
-        name.setType("String");
-        name.setDescription("name description");
-        parameter.setProperties(Map.of("name",name));
 
 
 

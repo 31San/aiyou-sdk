@@ -1,7 +1,7 @@
 package org.eu.miraikan.aiyou.types.functionCalling;
 
 
-//deprecated
+@Deprecated
 public class Property {
     String type;
     String description;

@@ -1,7 +1,7 @@
 package org.eu.miraikan.aiyou.examples;
 
 
-import org.eu.miraikan.aiyou.constant.Roles;
+
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiResponse;
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
@@ -11,63 +11,48 @@ import org.eu.miraikan.aiyou.model.openai.completions.template.*;
 import org.eu.miraikan.aiyou.support.ClientConfigurationHelper;
 import org.eu.miraikan.aiyou.types.Blob;
 import org.eu.miraikan.aiyou.types.Content;
+import org.eu.miraikan.aiyou.types.Part;
 import org.eu.miraikan.aiyou.types.Text;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 
 import static org.eu.miraikan.aiyou.constant.Models.GPT_4_VISION_PREVIEW;
 import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
 
 public class ImageToText {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         ImageToText imageToText = new ImageToText();
        imageToText.geminiGenerateContent();
-   //    imageToText.openAIChatCompletion();
+    //   imageToText.openAIChatCompletion();
 
 
     }
 
-    public String geminiGenerateContent() throws Exception {
+    public String geminiGenerateContent() throws IOException, InterruptedException {
 
-
+        //load image and convert to base64
         URL url = new URL("https://storage.googleapis.com/generativeai-downloads/images/scones.jpg");
-
-
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();
-
-
         InputStream inputStream = connection.getInputStream();
-
-
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         int bytesRead;
-        byte[] buffer = new
-
-                byte[1024];
+        byte[] buffer = new byte[1024];
         while ((bytesRead = inputStream.read(buffer)) != -1) {
             outputStream.write(buffer, 0, bytesRead);
         }
-
-
         byte[] base64Image = outputStream.toByteArray();
 
-       ;
 
-        String baseUrl = "https://generativelanguage.googleapis.com/v1beta/models/";
-        String api_key = "AIzaSyAbZC0KdOyk4avCj-afLzX7x6rxbVnt59A";
-
-
-
-
-        RestChatClient client = new RestChatClient();
-        client.setClientConfig(ClientConfigurationHelper.createGeminiClientConfig());
+        RestChatClient client = new RestChatClient(ClientConfigurationHelper.createGeminiClientConfig());
         GeminiProVision model = new GeminiProVision(client);
 
         GeminiRequest generativeRequest = new GeminiRequest();
@@ -75,21 +60,28 @@ public class ImageToText {
         Content content = new Content(ROLE_USER,List.of(new Text("What is this picture?"),
                 new Blob("image/jpeg", base64Image)));
 
-        generativeRequest.setContents(List.of(content));
+        generativeRequest.setContent(content);
 
         GeminiResponse generativeResponse = model.generateContent(generativeRequest);
 
-        Text text1 = (Text) generativeResponse.getCandidates().get(0)
-                .getContent().getParts().get(0);
+        Optional<Part> message =  generativeResponse.getResponseMessage();
 
-        System.out.println(text1.getData());
+        if(message.isEmpty()){
+            return null;
+        }
 
-        return text1.getData();
+        Text text = (Text) message.get();
+
+
+
+        System.out.println(text.getData());
+
+        return text.getData();
     }
 
 
     //gpt4v is not tested yet
-    public void openAIChatCompletion() throws Exception{
+    public void openAIChatCompletion() throws IOException, InterruptedException {
 
         String url = "https://storage.googleapis.com/generativeai-downloads/images/scones.jpg";
 

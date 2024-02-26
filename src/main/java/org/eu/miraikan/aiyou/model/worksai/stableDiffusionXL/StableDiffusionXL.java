@@ -6,6 +6,7 @@ import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 import org.eu.miraikan.aiyou.model.GenerativeModel;
 import org.eu.miraikan.aiyou.types.Text;
 
+import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
@@ -23,7 +24,7 @@ public class StableDiffusionXL implements GenerativeModel {
     }
 
 
-    public Blob generateContent(Text text) throws Exception {
+    public Blob generateContent(Text text) throws IOException, InterruptedException {
 
         HttpRequest httpRequest = modelAdapter.createHttpRequest(text);
 

@@ -1,57 +1,68 @@
 package org.eu.miraikan.aiyou.model.gemini;
 
+
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiResponse;
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 import org.eu.miraikan.aiyou.generativeClient.stream.StreamIterator;
 import org.eu.miraikan.aiyou.model.GenerativeModel;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Iterator;
-import java.util.stream.Stream;
 
 
-//how to deal with history content, as well as safety and config context?
+
+
 public class GeminiPro implements GenerativeModel {
 
-    //hard coding
+    /**
+     * hard coding
+     */
     public static final String MODEL_NAME = "gemini-pro";
     RestChatClient client;
     GeminiAdapter modelAdapter;
 
-    //use default model
+    /**
+     * use default model
+     */
+
     public GeminiPro(RestChatClient client) {
         this.client=client;
         modelAdapter = new GeminiAdapter(client.getClientConfig(),MODEL_NAME);
     }
 
-    //switch to gemini pro 1.5
+    /**
+     * switch gemini pro model
+     * @param client
+     * @param MODEL_NAME
+     */
     public GeminiPro(RestChatClient client,String MODEL_NAME) {
         this.client=client;
         modelAdapter = new GeminiAdapter(client.getClientConfig(),MODEL_NAME);
     }
 
-    public GeminiResponse generateContent(GeminiRequest generativeRequest) throws Exception {
-
-
-
+    public GeminiResponse generateContent(GeminiRequest generativeRequest) throws IOException, InterruptedException {
 
         HttpRequest httpRequest = modelAdapter.createHttpRequest(generativeRequest);
 
         HttpResponse<String> httpResponse =client.generateContent(httpRequest);
-
-
 
         return modelAdapter.handleHttpResponse(httpResponse);
 
     };
 
 
-    //gemini not follow web-sent-event
-    public Iterator<GeminiResponse> generateStreamContent(GeminiRequest generativeRequest) throws Exception {
-
+    /**
+     * gemini streaming doesn't follow web-sent-event
+     * @param generativeRequest
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public Iterator<GeminiResponse> generateStreamContent(GeminiRequest generativeRequest) throws IOException, InterruptedException {
 
 
         HttpRequest httpRequest = modelAdapter.createStreamRequest(generativeRequest);

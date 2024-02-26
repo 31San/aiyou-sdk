@@ -27,45 +27,37 @@ import static org.eu.miraikan.aiyou.constant.Roles.*;
 public class FunctionCallingExample {
     public static void main(String[] args) throws Exception {
         FunctionCallingExample functionCallingExample = new FunctionCallingExample();
-    //    functionCallingExample.geminiSingleTurn();
+        functionCallingExample.geminiSingleTurn();
 
         functionCallingExample.geminiMultiTurn();
     }
 
 
-    //directly call api without function calling helper.
+    //Directly call api without functionCalling Helper.
     public void geminiSingleTurn() throws Exception {
 
-        RestChatClient client = new RestChatClient();
-        client.setClientConfig(ClientConfigurationHelper.createGeminiClientConfig());
+        RestChatClient client = new RestChatClient(ClientConfigurationHelper.createGeminiClientConfig());
         GeminiPro model = new GeminiPro(client);
 
 
-        GeminiRequest geminiRequest = new GeminiRequest();
-        geminiRequest.setContents(List.of(new Content(ROLE_USER,List.of(new Text("Which theaters in Mountain View show Barbie movie?")))));
-        Tool tool = new Tool();
-        List<FunctionDeclaration> functionDeclarations = new ArrayList<>();
+        //Define FunctionDeclaration
+        FunctionDeclaration functionDeclaration = FunctionDeclaration.builder()
+                .name("find_theaters")
+                .description("find movie titles currently playing in theaters based on any description, genre, title words, etc.")
+                .parameters(MovieAndTheater.class).build();
 
-        FunctionDeclaration functionDeclaration = new FunctionDeclaration();
+        Tool tool = new Tool(List.of(functionDeclaration));
 
-        functionDeclaration.setName("find_theaters");
-        functionDeclaration.setDescription("find movie titles currently playing in theaters based on any description, genre, title words, etc.");
+        GeminiRequest geminiRequest = GeminiRequest.builder()
+                        .contents(List.of(new Content(ROLE_USER,new Text("Which theaters in Mountain View show Barbie movie?"))))
+                        .tools(List.of(tool)).build();
 
-
-
-
-        functionDeclaration.setParameters(MovieAndTheater.class);
-
-        functionDeclarations.add(functionDeclaration);
-        tool.setFunctionDeclarations(functionDeclarations);
-
-        geminiRequest.setTools(List.of(tool));
 
         GeminiResponse geminiResponse = model.generateContent(geminiRequest);
 
 
-        Part part =  geminiResponse.getCandidates().get(0)
-                .getContent().getParts().get(0);
+        //response message can be text or functionCall
+        Part part =  geminiResponse.getCandidates().get(0).getContent().getParts().get(0);
 
         FunctionCall functionCall = part instanceof FunctionCall ? ((FunctionCall) part) : null;
 
@@ -100,11 +92,11 @@ public class FunctionCallingExample {
                 "      }\n" +
                 "    }";
 
-        System.out.println(fakeResponse);
+
         FunctionCallingHelper functionCallingHelper = new FunctionCallingHelper();
 
 
-        //lambada should be implement Function interface
+        //lambada should  implement Function interface
         FunctionDeclaration functionDeclaration = functionCallingHelper
                 .addFunction("find_theaters",MovieAndTheater.class, (MovieAndTheater movieAndTheater) -> fakeResponse)
                 .setDescription("find movie titles currently playing in theaters based on any description, genre, title words, etc.");
@@ -112,24 +104,22 @@ public class FunctionCallingExample {
         List<FunctionDeclaration> functionDeclarations = functionCallingHelper.getFunctionDeclarations();
 
         //build request
-        RestChatClient client = new RestChatClient();
-        client.setClientConfig(ClientConfigurationHelper.createGeminiClientConfig());
+        RestChatClient client = new RestChatClient(ClientConfigurationHelper.createGeminiClientConfig());
         GeminiPro model = new GeminiPro(client);
 
         ChatSession<Content> chatSession = new ChatSession<>();
-        chatSession.append(new Content(ROLE_USER,List.of(new Text("Which theaters in Mountain View show Barbie movie?"))));
+        chatSession.append(new Content(ROLE_USER,new Text("Which theaters in Mountain View show Barbie movie?")));
 
-        GeminiRequest geminiRequest = new GeminiRequest();
-        geminiRequest.setContents(chatSession.getContents());
-        Tool tool = new Tool();
-        tool.setFunctionDeclarations(functionDeclarations);
-        geminiRequest.setTools(List.of(tool));
+        GeminiRequest geminiRequest = GeminiRequest.builder()
+                        .contents(chatSession.getContents())
+                        .tools(List.of(new Tool(functionDeclarations)))
+                        .build();
+
 
         GeminiResponse geminiResponse = model.generateContent(geminiRequest);
 
 
-        Part part =  geminiResponse.getCandidates().get(0)
-                .getContent().getParts().get(0);
+        Part part =  geminiResponse.getCandidates().get(0).getContent().getParts().get(0);
 
         FunctionCall functionCall = part instanceof FunctionCall ? ((FunctionCall) part) : null;
 
@@ -137,37 +127,36 @@ public class FunctionCallingExample {
             return;
         }
 
-        //synchronized functionCalling
-        Object message = functionCallingHelper.callFunction(functionCall.getName(), functionCall.getArgs());
+        // synchronized functionCalling
+        Object returnValue = functionCallingHelper.callFunction(functionCall.getName(), functionCall.getArgs());
         ObjectMapper objectMapper = new ObjectMapper();
-        String json1 = objectMapper.writeValueAsString(functionCall);
-        String json2 = objectMapper.writeValueAsString(message);
+        String functionCallMessage = objectMapper.writeValueAsString(functionCall);
+        String result = objectMapper.writeValueAsString(returnValue);
 
 
-        chatSession.append(new Content(ROLE_MODEL,List.of(new Text(json1))));
+        chatSession.append(new Content(ROLE_MODEL,new Text(functionCallMessage)));
+        chatSession.append(new Content(ROLE_USER,new Text(result)));
 
-        chatSession.append(new Content(ROLE_USER,List.of(new Text(json2))));
 
-         geminiRequest.setContents(chatSession.getContents());
-
+        //reply result
+        geminiRequest.setContents(chatSession.getContents());
         geminiResponse = model.generateContent(geminiRequest);
 
+        //unchecked
         Text text = (Text) geminiResponse.getCandidates().get(0)
                 .getContent().getParts().get(0);
 
         System.out.println(text.getData());
 
-        //async
+        //Another choice.async functionCalling
         CompletableFuture<Object> message1 = functionCallingHelper.executeAsync(functionCall.getName(), functionCall.getArgs());
-        message1.thenAccept(
-                System.out::println
-        );
+        message1.thenAccept(System.out::println);
 
     }
 
 
 
-    //json model with annotation
+    //json schema model with annotation
     public static  class MovieAndTheater{
         @JsonPropertyDescription("Any movie title")
         public String movie;

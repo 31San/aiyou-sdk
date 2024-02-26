@@ -1,43 +1,78 @@
-# Aiyou 
+# Alias generative-ai-java
 
-Aiyou is a universal AI chatbot SDK, far from product ready yet.
+Aiyou is a universal AI chatbot SDK.
 
 This project was inspired Google Generative AI SDK.
 
-It was just an attempt to fill the gap in the Java platform Originally.
-
-Currently, it supports parts of basic functionalities of Google Gemini, OpenAI, and CloudFlare's WorkAI.
+Initial attempt was fill its gap in  Java platform.
 
 
-## Document
 
-### Architecture
-![architecture](./uml.png)
 
-### Example
+## Supported Model
 
-Use Gemini Pro for text generation
+### Google Gemini
 
-    RestChatClient client = new RestChatClient();
+1. gemini-pro  
+   - text generation
+   - streaming
+   - functionCalling
+2. gemini-pro-vision
+3. embedding
 
-    client.setClientConfig(ClientConfigurationHelper.createGeminiClientConfig());
+### OpenAI
 
-    GeminiPro model = new GeminiPro(client);  
+1. chatCompletion
+   - text generation
+   - streaming
+2. text-to-speech
 
-    GeminiRequest generativeRequest = new GeminiRequest();
+### CloudFlare WorkersAI
 
-    Text text = new Text("Hello World");
+1. StableDiffusionXL-1.0
 
-    generativeRequest.setContents(List.of(new Content(
-        ROLE_USER,List.of(text)
-    )));
 
-    GeminiResponse generativeResponse = model.generateContent(generativeRequest);
 
-    Text text1 = (Text) generativeResponse.getCandidates().get(0).getContent().getParts().get(0);    
-    System.out.println(text1.getData());
+## Usage
 
-### Key abstraction
+Check example code for detail
+
+### Config restClient
+
+Create restClient instance. Config URL and API_KEY via setClientConfig
+
+    Map<String,String> clientConfig;
+    RestChatClient client = new RestChatClient()
+
+### Create GenerativeModel
+
+Use model name to specify.  
+
+    GeminiPro model = new GeminiPro(client, Models.GEMINI_1_0_PRO_LATEST);
+
+### Build request
+
+    generativeRequest
+        .setContent(new Content(ROLE_USER, new Text(input)))
+        .setGenerationConfig(ModelConfigurationHelper.createGeminiModelConfig()); 
+
+### Handling response
+
+    Iterator<GeminiResponse> iterator = model.generateStreamContent(generativeRequest);
+    
+    while (iterator.hasNext()){
+        Text text1 = (Text) iterator.next().getCandidates().get(0).getContent().getParts().get(0);
+        System.out.print(text1.getData());  
+    }
+
+### Customize
+
+To add a model.   
+Create its own request and response template, that may consist of existing supported types   
+Each model has own modelAdapter, which handle most input and output logic.
+
+
+## Key abstraction
 
 - GenerativeClient  
 
@@ -59,18 +94,21 @@ Use Gemini Pro for text generation
 - StreamIterator   
 
     Provides convenient synchronized streaming support, each call return text or binary chunk. 
-       
 
-### Draw back for now
+## Architecture       
+![architecture](./uml.png)
 
-It throws exceptions as possible, and no logging support.
+## Dependencies
 
-Since Gemini streaming does not follow server-sent events, implementation is a bot roughly.
+Json Schema lib introduce SLF4J-API, so a logging implementation is required.
 
-## Coming soon
 
-Support more models, and platform like Azure
 
-Advanced feature, function calling and embedding 
+## Route Map
 
-Websocket client, maybe Bidirectional stream
+Websocket client, maybe Bidirectional stream for audio
+
+Support more models, and platform like Azure. 
+
+Looking forward to Sora official release.
+

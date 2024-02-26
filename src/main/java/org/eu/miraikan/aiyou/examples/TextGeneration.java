@@ -18,7 +18,9 @@ import org.eu.miraikan.aiyou.types.Content;
 import org.eu.miraikan.aiyou.types.Part;
 import org.eu.miraikan.aiyou.types.Text;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static org.eu.miraikan.aiyou.constant.Models.GPT_3_5_TURBO;
 import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
@@ -30,40 +32,46 @@ public class TextGeneration {
         TextGeneration textGeneration = new TextGeneration();
 
        textGeneration.geminiGenerateContent("hello");
- //     textGeneration.openAIChatCompletion();
-  //      textGeneration.multiTurnChat();
+      textGeneration.openAIChatCompletion();
+        textGeneration.multiTurnChat();
     }
 
 
-    public String geminiGenerateContent(String input) throws Exception {
-        RestChatClient client = new RestChatClient();
-        client.setClientConfig(ClientConfigurationHelper.createGeminiClientConfig());
+
+    public String geminiGenerateContent(String input) throws IOException, InterruptedException {
+
+        //build client. Use own apiKey instead
+        RestChatClient client = new RestChatClient(ClientConfigurationHelper.createGeminiClientConfig());
+
+        //build model
         GeminiPro model = new GeminiPro(client, Models.GEMINI_1_0_PRO_LATEST);
 
+        //build request
         GeminiRequest generativeRequest = new GeminiRequest();
-        Text text = new Text(input);
-        generativeRequest.setContents(List.of(new Content(
-                ROLE_USER,List.of(text)
-        )));
+        generativeRequest
+                .setContent(new Content(ROLE_USER, new Text(input)))
+                .setGenerationConfig(ModelConfigurationHelper.createGeminiModelConfig());
 
+        //send request
+        GeminiResponse geminiResponse = model.generateContent(generativeRequest);
 
-        generativeRequest.setGenerationConfig(ModelConfigurationHelper.createGeminiModelConfig());
+        //Text response only here
+        Optional<Part> message = geminiResponse.getResponseMessage();
 
+        if(message.isEmpty()){
+            return null;
+        }
 
+        Text text = (Text) message.get();
+        System.out.println(text.getData());
 
-        GeminiResponse generativeResponse = model.generateContent(generativeRequest);
+        return text.getData();
 
-        Text text1 = (Text) generativeResponse.getCandidates().get(0)
-                .getContent().getParts().get(0);
-
-        System.out.println(text1.getData());
-
-        return text1.getData();
     }
 
-    public void openAIChatCompletion() throws Exception{
-        RestChatClient client = new RestChatClient();
-        client.setClientConfig(ClientConfigurationHelper.createOpenAIClientConfig());
+    public void openAIChatCompletion() throws IOException, InterruptedException {
+        RestChatClient client = new RestChatClient(ClientConfigurationHelper.createOpenAIClientConfig());
+
 
         //3rd party service
         client.getClientConfig().put("BASE_URL","https://dzqc.link");
@@ -71,51 +79,52 @@ public class TextGeneration {
 
         ChatCompletion chatCompletion = new ChatCompletion(client);
         CompletionRequest completionRequest = new CompletionRequest();
-        completionRequest.setModel(GPT_3_5_TURBO);
+        completionRequest
+                .setMessage(new TextMessage(ROLE_USER,"hello"))
+                .setModel(GPT_3_5_TURBO);
 
-        TextMessage textMessage = new TextMessage(ROLE_USER,"hello");
-        completionRequest.setMessages(List.of(textMessage));
+        CompletionResponse completionResponse = chatCompletion.generateContent(completionRequest);
 
-         CompletionResponse completionResponse = chatCompletion.generateContent(completionRequest);
-
-
+        TextMessage textMessage = completionResponse.getChoices().get(0).getMessage();
+        System.out.println(textMessage.getContent());
 
     }
 
-    public void multiTurnChat() throws Exception {
+    public void multiTurnChat() throws IOException, InterruptedException {
 
         ChatSession<Content> chatSession = new ChatSession<>();
-        RestChatClient client = new RestChatClient();
-        client.setClientConfig(ClientConfigurationHelper.createGeminiClientConfig());
+        RestChatClient client = new RestChatClient(ClientConfigurationHelper.createGeminiClientConfig());
         GeminiPro model = new GeminiPro(client);
 
         GeminiRequest generativeRequest = new GeminiRequest();
-        Text text = new Text("hello");
-        Content content = new Content(
-                ROLE_USER,List.of(text)
-        );
+
+        Content content = new Content(ROLE_USER,new Text("hello"));
+
+        //save chat history
         chatSession.append(content);
         generativeRequest.setContents(chatSession.getContents());
+
         GeminiResponse generativeResponse = model.generateContent(generativeRequest);
         chatSession.append(generativeResponse.getCandidates().get(0).getContent());
 
         //second round
-        text = new Text("nice to meet you");
-        content = new Content(ROLE_USER,List.of(text));
+        content = new Content(ROLE_USER,new Text("nice to meet you"));
         chatSession.append(content);
         generativeRequest.setContents(chatSession.getContents());
         generativeResponse = model.generateContent(generativeRequest);
         chatSession.append(generativeResponse.getCandidates().get(0).getContent());
 
-        List<Content> contents = chatSession.getContents();
-        for (Content c : contents) {
+
+
+        chatSession.getContents().forEach(c->{
             List<Part> parts = c.getParts();
             Text t = (Text) parts.get(0);
             System.out.println(t.getData());
-        }
-
+        });
 
 
 
     }
+
+
 }

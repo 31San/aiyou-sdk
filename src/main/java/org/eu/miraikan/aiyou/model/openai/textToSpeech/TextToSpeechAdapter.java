@@ -1,5 +1,6 @@
 package org.eu.miraikan.aiyou.model.openai.textToSpeech;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eu.miraikan.aiyou.model.openai.textToSpeech.template.TextToSpeechRequest;
 import org.eu.miraikan.aiyou.model.openai.OpenAIAdapter;
@@ -31,7 +32,7 @@ public class TextToSpeechAdapter extends OpenAIAdapter<byte[]> {
         objectMapper = new ObjectMapper();
     }
 
-    public HttpRequest createHttpRequest(TextToSpeechRequest textToSpeechRequest) throws Exception {
+    public HttpRequest createHttpRequest(TextToSpeechRequest textToSpeechRequest) throws JsonProcessingException {
 
 
 
@@ -61,9 +62,9 @@ public class TextToSpeechAdapter extends OpenAIAdapter<byte[]> {
 
 
 
-    public Blob handleHttpResponse(HttpResponse<byte[]> response) throws Exception{
+    public Blob handleHttpResponse(HttpResponse<byte[]> response) {
 
-        return new Blob("mp3",response.body());
+        return new Blob("",response.body());
 
     }
 

@@ -1,6 +1,6 @@
 package org.eu.miraikan.aiyou.support;
 
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eu.miraikan.aiyou.types.functionCalling.FunctionDeclaration;

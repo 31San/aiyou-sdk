@@ -16,10 +16,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 
 public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
@@ -40,7 +38,7 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
 
 
 
-   public HttpRequest createHttpRequest(GeminiRequest generativeRequest) throws Exception {
+   public HttpRequest createHttpRequest(GeminiRequest generativeRequest) throws JsonProcessingException {
 
 
         String json = objectMapper.writeValueAsString(generativeRequest);
@@ -61,7 +59,7 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
     }
 
 
-    public HttpRequest createStreamRequest( GeminiRequest generativeRequest) throws Exception{
+    public HttpRequest createStreamRequest( GeminiRequest generativeRequest) throws JsonProcessingException {
         //deal with generativeRequest to json
 
 
@@ -80,7 +78,9 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
         return request;
     }
 
-    //roughly implementation, return generated text directly. Maybe Use Json Stream instead.
+    /**
+     * Use Json Stream parser
+     */
     @Override
     public  GeminiResponse handleStream(InputStream is){
 
@@ -127,7 +127,7 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
 
     }
 
-    public GeminiResponse handleHttpResponse(HttpResponse httpResponse) throws Exception{
+    public GeminiResponse handleHttpResponse(HttpResponse httpResponse) throws JsonProcessingException {
         HttpResponse<String> response = httpResponse;
         ObjectMapper objectMapper = new ObjectMapper();
         GeminiResponse generativeResponse= objectMapper.readValue(response.body(), GeminiResponse.class);

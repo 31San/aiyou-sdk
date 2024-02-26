@@ -5,7 +5,11 @@ import org.eu.miraikan.aiyou.model.ModelAdapter;
 import java.io.InputStream;
 import java.util.Iterator;
 
-//only for text stream, including base64
+/***
+ * Provide intuitional Streaming support
+ * Iterator for a stream
+ * @param <T>
+ */
 public class StreamIterator<T>  implements Iterator<T> {
     InputStream is;
     ModelAdapter<T> modelAdapter;

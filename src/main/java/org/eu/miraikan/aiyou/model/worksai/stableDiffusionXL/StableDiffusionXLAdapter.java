@@ -1,6 +1,7 @@
 package org.eu.miraikan.aiyou.model.worksai.stableDiffusionXL;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.eu.miraikan.aiyou.model.worksai.WorkersAIAdapter;
@@ -33,7 +34,7 @@ public class StableDiffusionXLAdapter extends WorkersAIAdapter {
         objectMapper.addMixIn(Text.class,TextMixin.class);
     }
 
-    public HttpRequest createHttpRequest(Text text) throws Exception {
+    public HttpRequest createHttpRequest(Text text) throws JsonProcessingException {
 
 
 
@@ -61,7 +62,7 @@ public class StableDiffusionXLAdapter extends WorkersAIAdapter {
     }
 
 
-    public Blob handleHttpResponse(HttpResponse<byte[]> response) throws Exception{
+    public Blob handleHttpResponse(HttpResponse<byte[]> response) {
 
 
 

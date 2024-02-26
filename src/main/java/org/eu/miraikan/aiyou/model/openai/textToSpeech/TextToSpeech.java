@@ -1,5 +1,6 @@
 package org.eu.miraikan.aiyou.model.openai.textToSpeech;
 
+
 import org.eu.miraikan.aiyou.generativeClient.stream.StreamIterator;
 import org.eu.miraikan.aiyou.model.openai.textToSpeech.template.TextToSpeechRequest;
 import org.eu.miraikan.aiyou.types.Blob;
@@ -7,12 +8,15 @@ import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 import org.eu.miraikan.aiyou.model.GenerativeModel;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Iterator;
 
-//speech recognition model
+/**
+ * speech  model
+ */
 public class TextToSpeech implements GenerativeModel {
     RestChatClient client;
     public static final String MODEL_NAME = "tts-1";
@@ -24,7 +28,7 @@ public class TextToSpeech implements GenerativeModel {
     }
 
 
-    public Blob generateContent(TextToSpeechRequest textToSpeechRequest) throws Exception {
+    public Blob generateContent(TextToSpeechRequest textToSpeechRequest) throws IOException, InterruptedException {
         HttpRequest httpRequest = modelAdapter.createHttpRequest(textToSpeechRequest);
 
         HttpResponse<byte[]> httpResponse = client.generateBinaryContent(httpRequest);
@@ -34,7 +38,7 @@ public class TextToSpeech implements GenerativeModel {
 
 
 
-    public Iterator<byte[]> generateBinaryStreamContent(TextToSpeechRequest textToSpeechRequest) throws Exception{
+    public Iterator<byte[]> generateBinaryStreamContent(TextToSpeechRequest textToSpeechRequest) throws IOException, InterruptedException {
 
         HttpRequest httpRequest = modelAdapter.createHttpRequest(textToSpeechRequest);
 

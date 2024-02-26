@@ -4,10 +4,12 @@ package org.eu.miraikan.aiyou.model.openai.completions.template;
 import java.util.List;
 
 
-//gtp4 vision message. not compatible with previous ones
+/**
+ * Gtp4 vision message.
+ */
 public class VisionMessage extends Message{
     String role;
-    //List<InlineData> content;
+
 
     public VisionMessage() {
     }

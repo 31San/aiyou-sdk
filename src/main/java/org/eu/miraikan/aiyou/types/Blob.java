@@ -11,7 +11,7 @@ public class Blob extends Part {
 
     public Blob(String mime_type, byte[] data) {
 
-       InlineData inlineData = new InlineData(mime_type,data);
+       InlineData inlineData = new InlineData(mime_type, data);
        this.data=inlineData;
     }
 
@@ -25,7 +25,7 @@ public class Blob extends Part {
 
 
 
-    public class InlineData{
+    public static class InlineData{
         private String mime_type;
 
         public InlineData() {

@@ -1,12 +1,14 @@
 package org.eu.miraikan.aiyou.model.openai.completions;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 import org.eu.miraikan.aiyou.generativeClient.stream.StreamIterator;
 import org.eu.miraikan.aiyou.model.GenerativeModel;
 import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionRequest;
 import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionResponse;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -22,7 +24,7 @@ public class ChatCompletion implements GenerativeModel {
         this.adapter = new CompletionAdapter(client.getClientConfig());
     }
 
-    public CompletionResponse generateContent(CompletionRequest completionRequest) throws Exception {
+    public CompletionResponse generateContent(CompletionRequest completionRequest) throws IOException, InterruptedException {
         HttpRequest httpRequest = adapter.createHttpRequest(completionRequest);
 
         HttpResponse<String> httpResponse =client.generateContent(httpRequest);
@@ -35,7 +37,7 @@ public class ChatCompletion implements GenerativeModel {
 
 
 
-    public Iterator<CompletionResponse> generateStreamContent(CompletionRequest completionRequest) throws Exception {
+    public Iterator<CompletionResponse> generateStreamContent(CompletionRequest completionRequest) throws IOException, InterruptedException {
         HttpRequest httpRequest = adapter.createHttpRequest(completionRequest);
 
         HttpResponse<InputStream> httpResponse =client.generateStreamContent(httpRequest);

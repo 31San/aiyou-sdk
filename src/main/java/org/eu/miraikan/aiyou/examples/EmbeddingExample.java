@@ -11,31 +11,30 @@ import org.eu.miraikan.aiyou.types.Content;
 import org.eu.miraikan.aiyou.types.Embedding;
 import org.eu.miraikan.aiyou.types.Text;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
 
 public class EmbeddingExample {
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException, InterruptedException {
         EmbeddingExample embeddingExample = new EmbeddingExample();
-        try {
+
             embeddingExample.geminiEmbedContent();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
-    public void geminiEmbedContent() throws Exception {
-        RestChatClient client = new RestChatClient();
-        client.setClientConfig(ClientConfigurationHelper.createGeminiClientConfig());
+    public void geminiEmbedContent() throws IOException, InterruptedException {
+        RestChatClient client = new RestChatClient(ClientConfigurationHelper.createGeminiClientConfig());
+
+
         EmbeddingModel model = new EmbeddingModel(client);
-
-
         Text text = new Text("Hello");
+        EmbeddingRequest embeddingRequest = EmbeddingRequest.builder()
+                        .model(Models.EMBEDDING_001)
+                        .content(new Content(null,new Text("Hello"))).build();
 
-        EmbeddingRequest embeddingRequest = new EmbeddingRequest();
-        embeddingRequest.setModel(Models.EMBEDDING_001);
-        embeddingRequest.setContent(new Content(null,List.of(text)));
+
 
 
         EmbeddingResponse embeddingResponse = model.embedContent(embeddingRequest);
@@ -52,9 +51,10 @@ public class EmbeddingExample {
 
         Text text1 = new Text("How are you");
 
-        EmbeddingRequest embeddingRequest1 = new EmbeddingRequest();
-        embeddingRequest1.setModel(Models.EMBEDDING_001);
-        embeddingRequest1.setContent(new Content(null,List.of(text)));
+        EmbeddingRequest embeddingRequest1 = EmbeddingRequest.builder()
+                        .model(Models.EMBEDDING_001)
+                                .content(new Content(null,new Text("How are you"))).build();
+
 
         BatchEmbeddingRequest batchEmbeddingRequest = new BatchEmbeddingRequest();
         batchEmbeddingRequest.setRequests(List.of(embeddingRequest,embeddingRequest1));

@@ -8,6 +8,7 @@ import org.eu.miraikan.aiyou.types.Blob;
 
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
@@ -19,7 +20,7 @@ import static org.eu.miraikan.aiyou.constant.Voices.ALLOY;
 
 //create directory before running
 public class TextToSpeechExample {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         InputStream is = TextToSpeechExample.class.getResourceAsStream("/sample.txt");
 
@@ -31,30 +32,25 @@ public class TextToSpeechExample {
         String str = sb.toString();
 
 
-
-        RestChatClient client = new RestChatClient();
-        client.setClientConfig(ClientConfigurationHelper.createOpenAIClientConfig());
+        RestChatClient client = new RestChatClient(ClientConfigurationHelper.createOpenAIClientConfig());
 
         //override with 3rd service
-        Map<String,String> config = client.getClientConfig();
-
-        config.put("OPENAI_API_KEY","sk-mUzqrl4kEpDnerux71CfD9Bc5058401988Cc4e54600aF260");
-        config.put("BASE_URL","https://api.chatgptid.net");
+        client.getClientConfig().put("OPENAI_API_KEY","sk-mUzqrl4kEpDnerux71CfD9Bc5058401988Cc4e54600aF260");
+        client.getClientConfig().put("BASE_URL","https://api.chatgptid.net");
 
 
 
         TextToSpeech model = new TextToSpeech(client);
-        TextToSpeechRequest textToSpeechRequest = new TextToSpeechRequest();
-        textToSpeechRequest.setInput(str);
-        textToSpeechRequest.setModel(TTS_1);
-        textToSpeechRequest.setVoice(ALLOY);
+
+        //use default mp3 format
+        TextToSpeechRequest textToSpeechRequest = TextToSpeechRequest.builder()
+                .input(str)
+                .model(TTS_1)
+                .voice(ALLOY).build();
+
+
+
         Blob blob = model.generateContent(textToSpeechRequest);
-
-
-
-
-
-
 
         byte[] bytes =  blob.getData().getData();
 
@@ -74,7 +70,6 @@ public class TextToSpeechExample {
         String chunkPath="./output/";
 
         int count=0;
-
         while(iterator.hasNext()){
             byte[] data = iterator.next();
             fos = new FileOutputStream(chunkPath+"tts"+count+".mp3");

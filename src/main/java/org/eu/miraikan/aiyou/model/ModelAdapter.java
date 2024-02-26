@@ -1,10 +1,13 @@
 package org.eu.miraikan.aiyou.model;
 
 import java.io.InputStream;
-import java.util.Iterator;
 
-//according to Api, build request from model input, convert response to output
-//mainly for json formation. use object mapper mixin or manually mapping.maybe serializer?
+
+/**
+ * According to Api, build request from model input, convert response to output
+ * Mainly for json formation. Use object mapper mixin or manually mapping, maybe serializer
+ * @param <T>
+ */
 public interface ModelAdapter<T> {
 
 
@@ -14,10 +17,7 @@ public interface ModelAdapter<T> {
     }
 
 
-    //must catch IOException
-    default byte[] handleBinaryStream(InputStream is)  {
-        throw new UnsupportedOperationException("handleStream");
-    }
+
 
 
 }

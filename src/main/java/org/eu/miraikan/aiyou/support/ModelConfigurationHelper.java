@@ -10,8 +10,9 @@ import java.util.Map;
 public class ModelConfigurationHelper {
 
 
-
-    //gemini support only 1 candidate
+    /**
+     * gemini support only 1 candidate
+     */
     public static GenerationConfig createGeminiModelConfig(){
 
         GenerationConfig config = new GenerationConfig();

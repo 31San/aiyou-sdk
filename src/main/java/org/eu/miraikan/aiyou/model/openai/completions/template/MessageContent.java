@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 
-//only for gpt4 vision
+/**
+ * Only for gpt4 vision
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MessageContent {
     String type;

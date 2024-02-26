@@ -1,43 +1,23 @@
 package org.eu.miraikan.aiyou.model.gemini.template;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.eu.miraikan.aiyou.types.Content;
 
+/**
+ * Don't set role for content
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmbeddingRequest {
     String model;
     String taskType;
     String title;
-    //do not need user property
     Content content;
 
-    public String getModel() {
-        return model;
-    }
 
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getTaskType() {
-        return taskType;
-    }
-
-    public void setTaskType(String taskType) {
-        this.taskType = taskType;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Content getContent() {
-        return content;
-    }
-
-    public void setContent(Content content) {
-        this.content = content;
-    }
 }

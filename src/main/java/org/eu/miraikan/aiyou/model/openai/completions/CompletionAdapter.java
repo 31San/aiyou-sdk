@@ -2,7 +2,6 @@ package org.eu.miraikan.aiyou.model.openai.completions;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eu.miraikan.aiyou.model.openai.OpenAIAdapter;
@@ -11,14 +10,11 @@ import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionRequest
 import org.eu.miraikan.aiyou.model.openai.completions.template.CompletionResponse;
 import org.eu.miraikan.aiyou.model.openai.completions.template.TextMessage;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 

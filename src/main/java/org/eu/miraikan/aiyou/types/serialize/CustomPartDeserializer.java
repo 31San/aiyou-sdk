@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import org.eu.miraikan.aiyou.types.Part;
 import org.eu.miraikan.aiyou.types.Text;
@@ -23,12 +24,17 @@ public class CustomPartDeserializer extends StdDeserializer<Part>{
     @Override
     public Part deserialize(JsonParser jp, DeserializationContext deserializationContext) throws IOException, JacksonException {
 
-        // 获得当前token的起始位置
+        // acquire token position
         jp.nextToken();
-        // 构建一个JsonNode
+
+        if (jp.getCodec() == null) {
+            jp.setCodec(new ObjectMapper());
+        }
+
+        // construct JsonNode
         JsonNode node = jp.getCodec().readTree(jp);
 
-        // 注意，以下我们使用JsonNode来获取相关属性，而不是treeToValue
+
         if (node.has("text")) {
             Text textPart = new Text();
             textPart.setData(node.get("text").asText());
@@ -37,7 +43,7 @@ public class CustomPartDeserializer extends StdDeserializer<Part>{
             FunctionCall functionCall = new FunctionCall();
             functionCall.setName(node.get("functionCall").get("name").asText());
 
-            // 将 args 节点转换回 JSON 字符串
+
             String argsAsJsonString = node.get("functionCall").get("args").toString();
             functionCall.setArgs(argsAsJsonString);
             return functionCall;

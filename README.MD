@@ -65,10 +65,32 @@ Use model name to specify.
         System.out.print(text1.getData());  
     }
 
+### Function
+Define function argument
+
+    
+
+    public static  class MovieAndTheater{
+        @JsonPropertyDescription("Any movie title")
+        public String movie;
+        @JsonPropertyDescription("The city and state, e.g. San Francisco, CA or a zip code e.g. 95616")
+        @JsonProperty(required = true)
+        public String location;
+    }
+
+Declare function with helper
+
+    FunctionDeclaration functionDeclaration = functionCallingHelper
+        .addFunction("find_theaters",MovieAndTheater.class, (MovieAndTheater movieAndTheater) -> fakeResponse)
+        .setDescription("find movie titles currently playing in theaters based on any description, genre, title words, etc."); 
+
+Async Execute functionCall from response 
+    
+    CompletableFuture<Object> message = functionCallingHelper.executeAsync(functionCall.getName(), functionCall.getArgs());
+
 ### Customize
 
-To add a model.   
-Create its own request and response template, that may consist of existing supported types   
+To add a model, create its own request and response template, that may consist of existing supported types     
 Each model has own modelAdapter, which handle most input and output logic.
 
 

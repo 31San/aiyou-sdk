@@ -31,7 +31,15 @@ Initial attempt was fill its gap in  Java platform.
 
 1. StableDiffusionXL-1.0
 
+## Import
 
+### Maven
+
+        <dependency>
+            <groupId>org.eu.miraikan</groupId>
+            <artifactId>aiyou-sdk</artifactId>
+            <version>0.20</version>
+        </dependency>    
 
 ## Usage
 

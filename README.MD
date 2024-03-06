@@ -4,7 +4,7 @@ Aiyou is a universal AI chatbot SDK.
 
 This project was inspired Google Generative AI SDK.
 
-Initial attempt was fill its gap in  Java platform.
+Initial attempt was fill its gap in Java platform.
 
 
 
@@ -27,7 +27,7 @@ Initial attempt was fill its gap in  Java platform.
    - streaming
 2. text-to-speech
 
-### CloudFlare WorkersAI
+### CloudFlare WorkersAI (Open Source Models)
 
 1. StableDiffusionXL-1.0
 
@@ -35,11 +35,15 @@ Initial attempt was fill its gap in  Java platform.
 
 ### Maven
 
-        <dependency>
-            <groupId>org.eu.miraikan</groupId>
-            <artifactId>aiyou-sdk</artifactId>
-            <version>0.20</version>
-        </dependency>    
+    <dependency>
+        <groupId>org.eu.miraikan</groupId>
+        <artifactId>aiyou-sdk</artifactId>
+        <version>0.20</version>
+    </dependency>    
+
+### Gradle
+
+    implementation group: 'org.eu.miraikan', name: 'aiyou-sdk', version: '0.20'
 
 ## Usage
 

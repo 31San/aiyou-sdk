@@ -4,9 +4,6 @@ Aiyou is a universal AI chatbot SDK.
 
 This project was inspired Google Generative AI SDK.
 
-Initial attempt was fill its gap in Java platform.
-
-
 
 
 ## Supported Model
@@ -35,71 +32,76 @@ Initial attempt was fill its gap in Java platform.
 
 ### Maven
 
-    <dependency>
-        <groupId>org.eu.miraikan</groupId>
-        <artifactId>aiyou-sdk</artifactId>
-        <version>0.20</version>
-    </dependency>    
+````
+<dependency>
+<groupId>org.eu.miraikan</groupId>
+<artifactId>aiyou-sdk</artifactId>
+<version>0.20</version>
+</dependency>
+````
 
 ### Gradle
-
-    implementation group: 'org.eu.miraikan', name: 'aiyou-sdk', version: '0.20'
-
+````
+implementation group: 'org.eu.miraikan', name: 'aiyou-sdk', version: '0.20'
+````
 ## Usage
 
 Check example code for detail
 
 ### Config restClient
 
+
 Create restClient instance. Config URL and API_KEY via setClientConfig
 
-    Map<String,String> clientConfig;
-    RestChatClient client = new RestChatClient()
+```java
+Map<String,String> clientConfig;
+RestChatClient client = new RestChatClient();
+```
 
 ### Create GenerativeModel
 
 Use model name to specify.  
-
-    GeminiPro model = new GeminiPro(client, Models.GEMINI_1_0_PRO_LATEST);
-
+```java
+GeminiPro model = new GeminiPro(client, Models.GEMINI_1_0_PRO_LATEST);
+```
 ### Build request
-
+```
     generativeRequest
         .setContent(new Content(ROLE_USER, new Text(input)))
         .setGenerationConfig(ModelConfigurationHelper.createGeminiModelConfig()); 
-
+```
 ### Handling response
+```
+Iterator<GeminiResponse> iterator = model.generateStreamContent(generativeRequest);
 
-    Iterator<GeminiResponse> iterator = model.generateStreamContent(generativeRequest);
-    
-    while (iterator.hasNext()){
-        Text text1 = (Text) iterator.next().getCandidates().get(0).getContent().getParts().get(0);
-        System.out.print(text1.getData());  
-    }
-
+while (iterator.hasNext()){
+    Text text1 = (Text) iterator.next().getCandidates().get(0).getContent().getParts().get(0);
+    System.out.print(text1.getData());  
+}
+```
 ### Function
 Define function argument
 
-    
 
-    public static  class MovieAndTheater{
-        @JsonPropertyDescription("Any movie title")
-        public String movie;
-        @JsonPropertyDescription("The city and state, e.g. San Francisco, CA or a zip code e.g. 95616")
-        @JsonProperty(required = true)
-        public String location;
-    }
-
+```java
+public static  class MovieAndTheater{
+    @JsonPropertyDescription("Any movie title")
+    public String movie;
+    @JsonPropertyDescription("The city and state, e.g. San Francisco, CA or a zip code e.g. 95616")
+    @JsonProperty(required = true)
+    public String location;
+}
+```
 Declare function with helper
-
+```java
     FunctionDeclaration functionDeclaration = functionCallingHelper
         .addFunction("find_theaters",MovieAndTheater.class, (MovieAndTheater movieAndTheater) -> fakeResponse)
         .setDescription("find movie titles currently playing in theaters based on any description, genre, title words, etc."); 
-
+```
 Async Execute functionCall from response 
-    
-    CompletableFuture<Object> message = functionCallingHelper.executeAsync(functionCall.getName(), functionCall.getArgs());
-
+```java    
+CompletableFuture<Object> message = functionCallingHelper.executeAsync(functionCall.getName(), functionCall.getArgs());
+```
 ### Customize
 
 To add a model, create its own request and response template, that may consist of existing supported types     

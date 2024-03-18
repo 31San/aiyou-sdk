@@ -21,4 +21,9 @@ public class Text extends Part {
     public void setData(String data) {
         super.setData(data);
     }
+
+    @Override
+    public String toString(){
+        return (String) super.getData();
+    }
 }

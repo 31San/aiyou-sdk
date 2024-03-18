@@ -16,6 +16,14 @@ public class ClientConfigurationHelper {
         return config;
     }
 
+    public static Map<String,String> createGeminiOAuthClientConfig(){
+        Map<String,String> config = new HashMap<>();
+        config.put("PROJECT_ID","academic-pier-96706");
+        config.put("ACCESS_TOKEN","AIzaSyAbZC0KdOyk4avCj-afLzX7x6rxbVnt59A");
+        config.put("BASE_URL","https://generativelanguage.googleapis.com");
+        return config;
+    }
+
     public static Map<String,String> createWorksAIClientConfig(){
         Map<String,String> config = new HashMap<>();
         config.put("API_TOKEN","mxwfHIdpSuPNQr1Zhi3crsUvFQaJh-igWEFeU1_U");

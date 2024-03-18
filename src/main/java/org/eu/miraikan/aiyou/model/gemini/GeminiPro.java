@@ -22,8 +22,13 @@ public class GeminiPro implements GenerativeModel {
      * hard coding
      */
     public static final String MODEL_NAME = "gemini-pro";
-    RestChatClient client;
-    GeminiAdapter modelAdapter;
+    protected RestChatClient client;
+   protected GeminiAdapter modelAdapter;
+
+    public GeminiPro() {
+    }
+
+
 
     /**
      * use default model
@@ -37,11 +42,21 @@ public class GeminiPro implements GenerativeModel {
     /**
      * switch gemini pro model
      * @param client
-     * @param MODEL_NAME
+     * @param ModelName
      */
-    public GeminiPro(RestChatClient client,String MODEL_NAME) {
+    public GeminiPro(RestChatClient client,String ModelName) {
         this.client=client;
-        modelAdapter = new GeminiAdapter(client.getClientConfig(),MODEL_NAME);
+        modelAdapter = new GeminiAdapter(client.getClientConfig(),ModelName);
+    }
+
+    /**
+     * for tuningAdapter
+     * @param client
+     * @param geminiAdapter
+     */
+    public GeminiPro(RestChatClient client,GeminiAdapter geminiAdapter){
+        this.client=client;
+        this.modelAdapter=geminiAdapter;
     }
 
     public GeminiResponse generateContent(GeminiRequest generativeRequest) throws IOException, InterruptedException {
@@ -71,5 +86,21 @@ public class GeminiPro implements GenerativeModel {
 
         return new StreamIterator<>(httpResponse.body(),modelAdapter);
 
+    }
+
+    public RestChatClient getClient() {
+        return client;
+    }
+
+    public void setClient(RestChatClient client) {
+        this.client = client;
+    }
+
+    public GeminiAdapter getModelAdapter() {
+        return modelAdapter;
+    }
+
+    public void setModelAdapter(GeminiAdapter modelAdapter) {
+        this.modelAdapter = modelAdapter;
     }
 }

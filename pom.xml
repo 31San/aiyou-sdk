@@ -6,7 +6,7 @@
 
     <groupId>org.eu.miraikan</groupId>
     <artifactId>aiyou-sdk</artifactId>
-    <version>0.20</version>
+    <version>0.21</version>
 
     <name>aiyou-sdk</name>
     <description>Aiyou is a universal AI chatbot SDK</description>

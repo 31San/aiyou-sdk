@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eu.miraikan.aiyou.examples.ModelTuning;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
 import org.eu.miraikan.aiyou.model.openai.completions.template.*;
 import org.eu.miraikan.aiyou.types.Blob;
@@ -13,6 +14,7 @@ import org.eu.miraikan.aiyou.types.Text;
 import org.eu.miraikan.aiyou.types.functionCalling.FunctionDeclaration;
 ;
 import org.eu.miraikan.aiyou.types.functionCalling.Tool;
+import org.eu.miraikan.aiyou.types.tuning.*;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -24,7 +26,9 @@ import static org.eu.miraikan.aiyou.constant.Models.GPT_3_5_TURBO;
 import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
 
 
-//useful test for json formation
+/**
+ * useful test for json formation
+ */
 public class JsonTest {
 
    // @Test
@@ -105,7 +109,7 @@ public class JsonTest {
 
     }
 
-    @Test
+    //@Test
     public void geminiFunctionCalling() throws JsonProcessingException {
         GeminiRequest geminiRequest = new GeminiRequest();
         geminiRequest.setContents(List.of(new Content(ROLE_USER,List.of(new Text("hello")))));
@@ -137,6 +141,36 @@ public class JsonTest {
 
     }
 
+    @Test
+    public void geminiTuningTest()throws JsonProcessingException {
+
+        //create a tunedModel request
+        TunedModel tunedModel = TunedModel.builder()
+                .displayName("next-number")
+                .description("return next number")
+                .build();
+
+        HyperParameters hyperParameters = HyperParameters.builder()
+                .learningRate(1.0f)
+                .epochCount(2)
+                .batchSize(2).build();
+
+        TrainingData<TuningExampleDict> trainingData = new TrainingData<>();
+        TrainingData.Examples<TuningExampleDict> examples = new TrainingData.Examples<>();
+        examples.setExamples(List.of(new TuningExampleDict("one","two")));
+        trainingData.setExamples(examples);
+
+        TuningTask tuningTask = TuningTask.builder()
+                .trainingData(trainingData)
+                .hyperParameters(hyperParameters)
+                .build();
+        tunedModel.setTuningTask(tuningTask);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        System.out.println(objectMapper.writeValueAsString(tunedModel));
+
+        System.out.println(System.getenv("PROJECT_ID"));
+    }
 
     public static  class MovieAndTheater{
         @JsonPropertyDescription("Any movie title")
@@ -146,8 +180,5 @@ public class JsonTest {
         public String location;
     }
 
-    //should contain only method and object type arg
-    public interface FindTheaters{
-        void find_theaters( MovieAndTheater movieAndTheater);
-    }
+
 }

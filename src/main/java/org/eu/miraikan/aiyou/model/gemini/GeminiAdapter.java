@@ -16,22 +16,49 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Map;
 
 
 
 public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
-    String API_KEY;
+    protected String API_KEY;
 
-    String BASE_URL ="https://generativelanguage.googleapis.com";
+    protected String BASE_URL ="https://generativelanguage.googleapis.com";
 
-    String MODEL_NAME;
+    protected String ACCESS_TOKEN;
 
-    ObjectMapper objectMapper;
+    protected String PROJECT_ID;
+
+    protected String MODEL_NAME;
+
+    protected ObjectMapper objectMapper;
+
+    public String getModelName() {
+        return MODEL_NAME;
+    }
+
+    public void setModelName(String modelName) {
+        this.MODEL_NAME = modelName;
+    }
+
+
 
     public GeminiAdapter(Map<String, String> config,String modelName) {
-        API_KEY = config.get("API_KEY");
+        if(config.get("API_KEY")!=null){
+            API_KEY = config.get("API_KEY");
+        }
+
+        if(config.get("ACCESS_TOKEN")!=null){
+            ACCESS_TOKEN = config.get("ACCESS_TOKEN");
+        }
+
+        if(config.get("PROJECT_ID")!=null){
+            PROJECT_ID = config.get("PROJECT_ID");
+        }
         BASE_URL = config.get("BASE_URL")==null?BASE_URL:config.get("BASE_URL");
+
+
         MODEL_NAME=modelName;
         objectMapper = new ObjectMapper();
     }
@@ -43,15 +70,26 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
 
         String json = objectMapper.writeValueAsString(generativeRequest);
 
-
+       HttpRequest request = null;
         //create request
+        if(API_KEY!=null){
+            request = HttpRequest.newBuilder ()
+                    .uri(URI.create(BASE_URL+"/v1beta/models/"+MODEL_NAME+":generateContent?key="+API_KEY))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+        }else {
+            //OAuth
+            request = HttpRequest.newBuilder ()
+                    .uri(URI.create(BASE_URL+"/v1beta/"+MODEL_NAME+":generateContent"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer "+ACCESS_TOKEN)
+                    .header("X-goog-user-project", PROJECT_ID)
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+        }
 
 
-        HttpRequest request = HttpRequest.newBuilder ()
-                .uri(URI.create(BASE_URL+"/v1beta/models/"+MODEL_NAME+":generateContent?key="+API_KEY))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
 
 
 
@@ -65,13 +103,22 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
 
         String json = objectMapper.writeValueAsString(generativeRequest);
 
-
-
-        HttpRequest request = HttpRequest.newBuilder ()
-                .uri(URI.create(BASE_URL+"/v1beta/models/"+MODEL_NAME+":streamGenerateContent?key="+API_KEY))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
+        HttpRequest request = null;
+        if(API_KEY!=null){
+           request = HttpRequest.newBuilder ()
+                    .uri(URI.create(BASE_URL+"/v1beta/models/"+MODEL_NAME+":streamGenerateContent?key="+API_KEY))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+        }else {
+            request = HttpRequest.newBuilder ()
+                    .uri(URI.create(BASE_URL+"/v1beta/"+MODEL_NAME+":streamGenerateContent"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer "+ACCESS_TOKEN)
+                    .header("X-goog-user-project", PROJECT_ID)
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+        }
 
 
 
@@ -176,4 +223,6 @@ public class GeminiAdapter implements ModelAdapter<GeminiResponse> {
     public BatchEmbeddingResponse handleEmbedContents(HttpResponse<String> httpResponse) throws JsonProcessingException {
         return objectMapper.readValue(httpResponse.body(), BatchEmbeddingResponse.class);
     }
+
+
 }

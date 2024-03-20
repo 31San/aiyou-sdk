@@ -1,9 +1,8 @@
 package org.eu.miraikan.aiyou.examples;
 
-import org.eu.miraikan.aiyou.constant.Models;
+
 import org.eu.miraikan.aiyou.constant.Roles;
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
-import org.eu.miraikan.aiyou.model.gemini.GeminiPro;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiResponse;
 import org.eu.miraikan.aiyou.model.gemini.tuning.GeminiProTuning;
@@ -18,6 +17,7 @@ import java.util.List;
 public class ModelTuning {
     public static void main(String[] args) throws IOException, InterruptedException {
        ModelTuning modelTuning = new ModelTuning();
+       modelTuning.listModel();
        modelTuning.tuneGeminiPro();
     }
 
@@ -82,10 +82,10 @@ public class ModelTuning {
         tunedModel.setTuningTask(tuningTask);
 
 
-    //    String name = geminiProTuning.createTunedModel(tunedModel);
+        String name = geminiProTuning.createTunedModel(tunedModel);
 
-        //!Todo. test only
-        String name ="tunedModels/nextnumber-xcjl0w88vz4c";
+        System.out.println("model name: "+name);
+
 
         //check task state
 
@@ -116,6 +116,29 @@ public class ModelTuning {
         geminiProTuning.deleteTunedModel(name);
 
 
-        /**/
+
+    }
+
+    public void listModel() throws IOException, InterruptedException {
+        RestChatClient client = new RestChatClient(ClientConfigurationHelper.createGeminiOAuthClientConfig());
+
+        String PROJECT_ID = System.getenv("PROJECT_ID");
+        String ACCESS_TOKEN = System.getenv("ACCESS_TOKEN");
+
+        if(PROJECT_ID!=null){
+            client.getClientConfig().put("PROJECT_ID", PROJECT_ID);
+        }
+        if(ACCESS_TOKEN!=null){
+            client.getClientConfig().put("ACCESS_TOKEN",ACCESS_TOKEN);
+        }
+
+        GeminiProTuning  geminiProTuning = new GeminiProTuning(client);
+
+        List<TunedModel> tunedModels = geminiProTuning.ListTunedModel();
+
+        for(TunedModel tunedModel:tunedModels){
+            System.out.println(tunedModel.getName());
+        }
+
     }
 }

@@ -57,12 +57,17 @@ public class GeminiProTuning extends GeminiPro {
         return modelAdapter.handleCreateTunedModelResponse(httpResponse);
 
     }
+
+    /**
+     * Update model description.
+     * Not support yet
+     */
     public void updateTunedModel(){}
 
     public void deleteTunedModel(String ModelName) throws IOException, InterruptedException {
         HttpRequest httpRequest = modelAdapter.createDeleteModelRequest(ModelName);
         HttpResponse<String> httpResponse = client.generateContent(httpRequest);
-        System.out.println(httpResponse.body());
+
     }
 
 

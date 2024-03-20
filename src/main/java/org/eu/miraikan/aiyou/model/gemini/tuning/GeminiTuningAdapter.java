@@ -33,9 +33,9 @@ public class GeminiTuningAdapter extends GeminiAdapter {
     }
 
     public List<TunedModel> handleListTunedModelsResponse(HttpResponse<String> httpResponse) throws JsonProcessingException {
-
-        List<TunedModel> list = objectMapper.readValue(httpResponse.body(),new TypeReference<List<TunedModel>>(){});
-
+        TypeReference<Map<String, List<TunedModel>>> typeRef = new TypeReference<Map<String, List<TunedModel>>>() {};
+        Map<String, List<TunedModel>> map = objectMapper.readValue(httpResponse.body(), typeRef);
+        List<TunedModel> list = map.get("tunedModels");
         return list;
     }
 
@@ -52,7 +52,7 @@ public class GeminiTuningAdapter extends GeminiAdapter {
     }
 
     public String handleCreateTunedModelResponse(HttpResponse<String> httpResponse) throws JsonProcessingException {
-        System.out.println(httpResponse.body());
+
         JsonNode rootNode = objectMapper.readTree(httpResponse.body());
         JsonNode tunedModelNode = rootNode.get("metadata").get("tunedModel");
 
@@ -71,7 +71,7 @@ public class GeminiTuningAdapter extends GeminiAdapter {
     }
 
     public TunedModel handleGetModelRequest(HttpResponse<String> httpResponse) throws JsonProcessingException {
-        System.out.println(httpResponse.body());
+
         return objectMapper.readValue(httpResponse.body(),TunedModel.class);
     }
 

@@ -14,7 +14,7 @@ public class GeminiProTuning extends GeminiPro {
 
     GeminiTuningAdapter modelAdapter;
 
-    public static final String MODEL_NAME = "models/gemini-pro";
+
 
     public GeminiProTuning(RestChatClient client) {
        modelAdapter=new GeminiTuningAdapter(client.getClientConfig(),MODEL_NAME);

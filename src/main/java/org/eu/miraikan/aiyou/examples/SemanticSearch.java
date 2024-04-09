@@ -11,14 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 //Create,query,delete corpus.
- //Use AQA model for generation.
 public class SemanticSearch {
     public static void main(String[] args) throws IOException, InterruptedException {
         SemanticSearch semanticSearch = new SemanticSearch();
-      //  semanticSearch.create();
+        semanticSearch.create();
         semanticSearch.listAndGet();
-   //   semanticSearch.query();
-    //    semanticSearch.delete();
+        semanticSearch.query();
+        semanticSearch.delete();
     }
     //create Chunks
     public void create() throws IOException, InterruptedException {

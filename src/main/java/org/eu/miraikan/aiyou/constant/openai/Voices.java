@@ -1,4 +1,4 @@
-package org.eu.miraikan.aiyou.constant;
+package org.eu.miraikan.aiyou.constant.openai;
 
 public class Voices {
     public static final String ALLOY = "alloy";

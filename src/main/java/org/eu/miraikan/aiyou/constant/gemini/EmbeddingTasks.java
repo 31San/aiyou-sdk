@@ -1,4 +1,4 @@
-package org.eu.miraikan.aiyou.constant;
+package org.eu.miraikan.aiyou.constant.gemini;
 
 public class EmbeddingTasks {
     public static final String TASK_TYPE_UNSPECIFIED = "TASK_TYPE_UNSPECIFIED";

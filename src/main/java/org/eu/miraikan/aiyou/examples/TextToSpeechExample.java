@@ -12,13 +12,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import java.util.Map;
 import java.util.Scanner;
 
-import static org.eu.miraikan.aiyou.constant.Models.TTS_1;
-import static org.eu.miraikan.aiyou.constant.Voices.ALLOY;
+import static org.eu.miraikan.aiyou.constant.openai.Models.TTS_1;
+import static org.eu.miraikan.aiyou.constant.openai.Voices.ALLOY;
 
-//create directory before running
+//create output folder before running
 public class TextToSpeechExample {
     public static void main(String[] args) throws IOException, InterruptedException {
 

@@ -1,20 +1,17 @@
 package org.eu.miraikan.aiyou.examples;
 
-import org.eu.miraikan.aiyou.constant.Models;
+
+import org.eu.miraikan.aiyou.constant.gemini.Models;
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 import org.eu.miraikan.aiyou.model.gemini.EmbeddingModel;
-import org.eu.miraikan.aiyou.model.gemini.GeminiPro;
 import org.eu.miraikan.aiyou.model.gemini.template.*;
 import org.eu.miraikan.aiyou.support.ClientConfigurationHelper;
-import org.eu.miraikan.aiyou.support.ModelConfigurationHelper;
 import org.eu.miraikan.aiyou.types.Content;
 import org.eu.miraikan.aiyou.types.Embedding;
 import org.eu.miraikan.aiyou.types.Text;
 
 import java.io.IOException;
 import java.util.List;
-
-import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
 
 public class EmbeddingExample {
     public static void main(String[] args) throws IOException, InterruptedException {

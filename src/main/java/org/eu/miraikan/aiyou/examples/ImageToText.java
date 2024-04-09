@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import static org.eu.miraikan.aiyou.constant.Models.GPT_4_VISION_PREVIEW;
+import static org.eu.miraikan.aiyou.constant.openai.Models.GPT_4_VISION_PREVIEW;
 import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
 
 public class ImageToText {

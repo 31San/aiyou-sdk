@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eu.miraikan.aiyou.examples.ModelTuning;
 import org.eu.miraikan.aiyou.model.gemini.template.GeminiRequest;
 import org.eu.miraikan.aiyou.model.openai.completions.template.*;
 import org.eu.miraikan.aiyou.types.Blob;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import static org.eu.miraikan.aiyou.constant.Models.GPT_3_5_TURBO;
+import static org.eu.miraikan.aiyou.constant.openai.Models.GPT_3_5_TURBO;
 
 import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
 
@@ -170,6 +169,8 @@ public class JsonTest {
         System.out.println(objectMapper.writeValueAsString(tunedModel));
 
         System.out.println(System.getenv("PROJECT_ID"));
+
+
     }
 
     public static  class MovieAndTheater{

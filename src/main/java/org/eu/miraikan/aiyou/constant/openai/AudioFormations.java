@@ -1,4 +1,4 @@
-package org.eu.miraikan.aiyou.constant;
+package org.eu.miraikan.aiyou.constant.openai;
 
 public class AudioFormations {
     public static final String MP3 = "mp3";

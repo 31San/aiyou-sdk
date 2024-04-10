@@ -1,7 +1,7 @@
 package org.eu.miraikan.aiyou.examples;
 
-import org.eu.miraikan.aiyou.constant.Models;
-import org.eu.miraikan.aiyou.constant.Roles;
+
+import org.eu.miraikan.aiyou.constant.gemini.Models;
 import org.eu.miraikan.aiyou.generativeClient.RestChatClient;
 
 import org.eu.miraikan.aiyou.model.gemini.GeminiPro;
@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static org.eu.miraikan.aiyou.constant.Models.GPT_3_5_TURBO;
+import static org.eu.miraikan.aiyou.constant.openai.Models.GPT_3_5_TURBO;
 import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
 
 //Generate text from text-only input

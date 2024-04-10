@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.eu.miraikan.aiyou.constant.Models.GPT_3_5_TURBO;
+import static org.eu.miraikan.aiyou.constant.openai.Models.GPT_3_5_TURBO;
 import static org.eu.miraikan.aiyou.constant.Roles.ROLE_USER;
 
 public class TextStreaming {
